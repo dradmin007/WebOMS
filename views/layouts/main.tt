@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="[% request.uri_base %]/favicon.ico">
+
+    <title>МГ ФОМС</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="[% request.uri_base %]/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="[% request.uri_base %]/css/font-awesome.min.css" rel="stylesheet" />
+
+    <!-- Custom styles for this template -->
+    <link href="[% request.uri_base %]/css/navbar.css" rel="stylesheet" />
+
+    <link href="[% request.uri_base %]/css/datepicker.css" rel="stylesheet" />
+    
+    <link href="[% request.uri_base %]/css/style.css" rel="stylesheet" />
+    <link href="[% request.uri_base %]/css/prettify.css" rel="stylesheet" />
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="[% request.uri_base %]/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="[% request.uri_base %]/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Grab jQuery from a CDN, fall back to local if necessary -->
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript">
+    /* <![CDATA[ */
+        !window.jQuery && document.write('<script type="text/javascript" src="[% request.uri_base %]/javascripts/jquery.js"><\/script>')
+    /* ]]> */
+    </script>
+
+  </head>
+
+
+    <div class="container">
+
+      <!-- Static navbar -->
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="[% request.uri_base %]">МГ ФОМС</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="[% request.uri_base %]">Домой</a></li>
+              <li><a href="[% request.uri_base %]/info">Как пользоваться</a></li>
+            </ul>
+<!--
+            <ul class="nav navbar-nav navbar-right">
+              <li class="active"><a href="./">Default <span class="sr-only">(current)</span></a></li>
+              <li><a href="../navbar-static-top/">Static top</a></li>
+              <li><a href="../navbar-fixed-top/">Fixed top</a></li>
+            </ul>
+-->            
+          </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+      </nav>
+
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+
+        [% content %]
+        
+      </div>
+
+      <!-- FOOTER -->
+        <div id="footer">
+            Powered by <a href="http://perldancer.org/">Dancer2</a> [% dancer_version %]
+        </div>
+      
+      
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="[% request.uri_base %]/js/bootstrap.min.js"></script>
+    <script src="[% request.uri_base %]/js/bootstrap-datepicker.js"></script>
+    <script src="[% request.uri_base %]/js/prettify.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="[% request.uri_base %]/js/ie10-viewport-bug-workaround.js"></script>
+
+  </body>
+</html>  
+  
