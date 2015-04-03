@@ -22,7 +22,12 @@
     
     <link href="[% request.uri_base %]/css/style.css" rel="stylesheet" />
     <link href="[% request.uri_base %]/css/prettify.css" rel="stylesheet" />
+    <link rel="stylesheet" href="[% request.uri_base %]/css/jquery-ui.css">
 
+    <script src="[% request.uri_base %]/js/jquery-1.11.2.min.js"></script>
+    <script src="[% request.uri_base %]/js/jquery-ui.js"></script>    
+    
+    
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="[% request.uri_base %]/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="[% request.uri_base %]/js/ie-emulation-modes-warning.js"></script>
@@ -34,10 +39,10 @@
     <![endif]-->
 
     <!-- Grab jQuery from a CDN, fall back to local if necessary -->
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!--    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script> -->
     <script type="text/javascript">
     /* <![CDATA[ */
-        !window.jQuery && document.write('<script type="text/javascript" src="[% request.uri_base %]/javascripts/jquery.js"><\/script>')
+        !window.jQuery && document.write('<script type="text/javascript" src="[% request.uri_base %]/js/jquery-1.11.2.min.js"><\/script>')
     /* ]]> */
     </script>
 
@@ -93,9 +98,10 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
+    
     <script src="[% request.uri_base %]/js/bootstrap.min.js"></script>
-    <script src="[% request.uri_base %]/js/bootstrap-datepicker.js"></script>
+   <!-- <script src="[% request.uri_base %]/js/bootstrap-datepicker.js"></script> -->
     <script src="[% request.uri_base %]/js/prettify.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="[% request.uri_base %]/js/ie10-viewport-bug-workaround.js"></script>

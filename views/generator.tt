@@ -1,34 +1,83 @@
-<script>
-   $(function(){
-       var nowTemp = new Date();
-       var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
-       $('#dpMonths').datepicker();
-   });
-</script>
+<script type="text/javascript">
+
+//   $(function(){
+//       var nowTemp = new Date();
+//       var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+//       $('#dpMonths').datepicker();
+//   });
+
+$(function() {
+            $('#sdate').datepicker({
+                changeMonth: true,
+                changeYear: true,
+		showOn: "button",
+		buttonImage: "images/calendar.gif",
+		buttonImageOnly: true,
+                showButtonPanel: true,
+                dateFormat: 'mm-yy',
+                showOn: "button",
+		onClose: function(dateText, inst) { 
+		      var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+		      var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+		      $(this).datepicker('setDate', new Date(year, month, 1));
+		      //console.log('Done is pressed');
+		}
+            });
+     $( "input[type=submit]" )
+      .button()
+      .click(function( event ) {
+        var old_name = this.value;
+        var id_button = this.id;
+        event.preventDefault();
+        this.value = "Идет расчет.....";
+	ajax_search(this.id, id_button, old_name); 
+      });
+  function ajax_search(btnid, id_clicked_btn, name_of_button){ 
+		//$("#results").show(); 
+		var sdate=$("#sdate").val();
+		var id=btnid;
+		//console.log('Done is pressed: id_clicked_btn : ' + id_clicked_btn + ' name_of_button-> ' + name_of_button);
+		$.post("oms", { id: id, int_date: sdate }, function(data){
+		    $('#'+id_clicked_btn).attr('value', name_of_button);
+		    if (data.length>0){ 
+			//$("#results").html(data);
+			$('#'+id_clicked_btn).attr('value', name_of_button + '  [ ' + data + ' ]');
+			//console.log('Done');
+		    } 
+		});
+    }
+ });
 
 
+
+</script>   
+<style>
+.ui-datepicker-calendar {
+    display: none;
+    }
+</style>
 
 <div class="panel panel-info">
   <div class="panel-heading">
     <h3 class="panel-title">Отчетный период</h3>
   </div>
   <div class="panel-body">
-      <!--  форма ввода расчетного периода -->
-        <div class="well">
-          <div class="input-append date" id="dpMonths" data-date="102/2012" data-date-format="mm/yyyy" data-date-viewmode="years" data-date-minviewmode="months">
-            <input class="span2" size="16" type="text" value="02/2012" readonly>
-            <span class="add-on"><i class="fa fa-calendar"></i></span>
-	  </div>          
-        </div>
-        
+  <form action="" method="POST" name="formid" id="formid">
+
+     <div class="dates">
+	<label for="sdate" />Дата (ММ/ГГГГ): </label><em></em>
+	     <INPUT type="text" name="date_s" value="" alt="Дата" id="sdate" class="dates required" readonly />
+     </div>
+  
         <ul class="list-group">
-          <li class="list-group-item"><a href="#" class="btn btn-default" role="button">Расчет ОМС (SSP4708) за отчетный период</a></li>
-          <li class="list-group-item"><a href="#" class="btn btn-default" role="button">Список подстанций (STASMP)</a></li>
-          <li class="list-group-item"><a href="#" class="btn btn-default" role="button">Список бригад (BRSP) за отчетный период</a></li>
-          <li class="list-group-item"><a href="#" class="btn btn-default" role="button">Список результатов (RES_SP)</a></li>
-          <li class="list-group-item"><a href="#" class="btn btn-default" role="button">Список улиц (STREETS)</a></li>
-          <li class="list-group-item"><a href="#" class="btn btn-default" role="button">Список сегментов (SEGMENTS)</a></li>
-          <li class="list-group-item"><a href="#" class="btn btn-default" role="button">Список результатов (NCI_VID_U)</a></li>
+          <li class="list-group-item"><input type="submit" id="SSP4708"   class="btn btn-info" value="Расчет ОМС (SSP4708) за отчетный период" /></li>
+          <li class="list-group-item"><input type="submit" id="STASMP"    class="btn btn-info" value="Список подстанций (STASMP)" /></li>
+          <li class="list-group-item"><input type="submit" id="BRSP"      class="btn btn-info" value="Список бригад (BRSP) за отчетный период" /></li>
+          <li class="list-group-item"><input type="submit" id="RES_SP"    class="btn btn-info" value="Список результатов (RES_SP)" /></li>
+          <li class="list-group-item"><input type="submit" id="STREETS"   class="btn btn-info" value="Список улиц (STREETS)" /></li>
+          <li class="list-group-item"><input type="submit" id="SEGMENTS"  class="btn btn-info" value="Список сегментов (SEGMENTS)" /></li>
+          <li class="list-group-item"><input type="submit" id="NCI_VID_U" class="btn btn-info" value="Список результатов (NCI_VID_U)" /></li>
         </ul>        
+  </form>
   </div>
 </div>
