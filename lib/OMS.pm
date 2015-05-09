@@ -184,7 +184,7 @@ sub get_ins_string {
 		}
 	}
 	$insStr .= ") values (";
-	for($k = 1; $k<=$#tpl_struct; $k++) {
+	for($k = 0; $k<=$#tpl_struct; $k++) {
 		$insStr .= "?";
 		$insStr .= "," if $#tpl_struct != $k;
 	}
@@ -249,7 +249,7 @@ sub get_cmd_for_oms {
  RECID,
  PERIOD,
  SP_ID,
- PST,
+ (case when length(trim(to_char(PST))) > 3 then substr(trim(to_char(PST)),length(trim(to_char(PST)))-2,3) else trim(to_char(PST)) end) PST,
  C_BR,
  PROFBR,
  D_U,
@@ -277,7 +277,7 @@ sub get_cmd_for_oms {
  LPU_ID
  from omstable2
  where  PERIOD = '$lcPeriod' and n_u not in (select a010 from s1)
--- and rownum < 100
+ --and rownum < 100
 ";
 
 }
@@ -300,7 +300,7 @@ sub get_cmd_for_brsp {
 	my $cmd = "
 select
  substr(OMC_get_no_nbr_03_09_2014(e090, e130, ABS(NVL(f130,0)), g070, g060), 1, 10) C_BR,
- e090 PST,
+ (case when length(trim(to_char(e090))) > 3 then substr(trim(to_char(e090)),length(trim(to_char(e090)))-2,3) else trim(to_char(e090)) end) PST,
  substr(OMC_get_nbr_text_03_09_2014(e090, e130, ABS(NVL(f130,0)), g070, g060), 1, 250) NAME
 from
   karta_all_for_statist
@@ -320,7 +320,7 @@ where
      and
      get_nbr_dnevnik_03_09_2014(e090,e130) not between 300 and 320
      and
-     (E090 < 1000 and E090 not in (67, 69, 71)) and
+     (E090 < 1000 and E090 not in (67, 69, 71) or e090 in (7702, 7703)) and
       E030 in (70, 71, 28, 99) and
      (coalesce(f070, f090, f240) is not null)
      ) then 1 else 0 end) = 1
@@ -391,7 +391,17 @@ select
  to_char(70) as PST,
  'ОАО Медицина' as NAME
 from
- dual";
+ dual
+ union all
+ select
+   to_char(702) as PST,
+   'ООО Импромед' as NAME
+ from dual
+union all
+select
+   to_char(703) as PST,
+   'ООО НОБФ Альянс' as NAME
+from dual";
 
 	Encode::_utf8_off($cmd);
 	Encode::from_to($cmd, 'utf-8', 'windows-1251');
@@ -721,9 +731,8 @@ sub doExpSSP4708 {
 		} else {
 			$lc_xx = substr( $lc_xx, 1, 40 );
 		}
-		$lc_lpu_id = 0 unless defined $lc_lpu_id;
-		$lc_lpu_id = scalar($row[28]) if defined $lc_lpu_id;
-		#if ( $lc_lpu_id eq "") { $lc_lpu_id = 0; } else { $lc_lpu_id = scalar($row[28]); }
+        $lc_lpu_id = 0;
+        $lc_lpu_id = scalar($row[28]) if defined $row[28];
 
 			 $sthDBF->execute(
 				 $lc_recid,
