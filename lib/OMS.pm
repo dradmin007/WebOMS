@@ -139,9 +139,9 @@ sub createDBF  {
 
 	my $dbh = DBI->connect("DBI:XBase:".$self->{pathOMS}.'/'.$self->{pathOUT}.'/')
         or die $DBI::errstr;
-	my $sth = $dbh->prepare($crStr) or die $dbh-errstr();
+	my $sth = $dbh->prepare($crStr) or die $dbh->errstr();
 	$sth->execute() or die $sth->errstr();
-	return $dbh;
+	return ($dbh, $filename);
 }
 
 sub get_ins_string {
@@ -277,7 +277,7 @@ sub get_cmd_for_oms {
  LPU_ID
  from omstable2
  where  PERIOD = '$lcPeriod' and n_u not in (select a010 from s1)
- --and rownum < 100
+ and rownum < 100
 ";
 
 }
@@ -320,7 +320,7 @@ where
      and
      get_nbr_dnevnik_03_09_2014(e090,e130) not between 300 and 320
      and
-     (E090 < 1000 and E090 not in (67, 69, 71) or e090 in (7702, 7703)) and
+     (E090 < 1000 and E090 not in (67, 69, 71) or e090 in (7702, 7703, 7792, 7793, 7794)) and
       E030 in (70, 71, 28, 99) and
      (coalesce(f070, f090, f240) is not null)
      ) then 1 else 0 end) = 1
@@ -401,10 +401,26 @@ union all
 select
    to_char(703) as PST,
    'ООО НОБФ Альянс' as NAME
-from dual";
+from dual
+union all
+select
+   to_char(792) as PST,
+   'ООО Импромед (13)' as NAME
+from dual
+union all
+select
+   to_char(793) as PST,
+   'ООО Импромед (25)' as NAME
+from dual
+union all
+select
+   to_char(794) as PST,
+   'ООО Импромед (20)' as NAME
+from dual
+";
 
 	Encode::_utf8_off($cmd);
-	Encode::from_to($cmd, 'utf-8', 'windows-1251');
+	Encode::from_to($cmd, 'utf-8', 'cp866');
 
 	return $cmd;
 
@@ -434,7 +450,7 @@ select
   to_char(code) as vid_u,
   SUBSTR(text,1,60) as text
  from
-  ncidict
+  kasu.ncidict
  where
   type = 19
  order by code
@@ -499,7 +515,7 @@ sub doExpSSP4708 {
 	my $self = shift;
 	my ($cmd, $ins, $year, $month, $t) = @_;
 
-	my ( $connDBF, $connORA, $sthDBF, @row,
+	my ( $connDBF, $connORA, $sthDBF, $fname, @row,
 		 $lc_d050,
 		 $lc_recid,
 		 $lc_period,
@@ -533,7 +549,7 @@ sub doExpSSP4708 {
 		);
 
 # Step #1 -> create dbf
-	$connDBF = $self->createDBF($year, $month, $t);
+	($connDBF,$fname) = $self->createDBF($year, $month, $t);
 	$sthDBF = $connDBF->prepare($ins) or die $connDBF->errstr;
 
 
@@ -769,7 +785,7 @@ sub doExpSSP4708 {
 
 	 $connORA->disconnect;
 	 $connDBF->disconnect;
-
+    return $fname;
 };
 
 sub doExpNciVidU
@@ -777,10 +793,10 @@ sub doExpNciVidU
 	my $self = shift;
 	my ($cmd, $ins, $year, $month, $t) = @_;
 
-	my ( $connDBF, $connORA, $sthDBF, @row );
+	my ( $connDBF, $connORA, $sthDBF, $fname, @row );
 
 # Step #1 -> create dbf
-	$connDBF = $self->createDBF($year, $month, $t);
+	($connDBF, $fname) = $self->createDBF($year, $month, $t);
 	$sthDBF = $connDBF->prepare($ins) or die $connDBF->errstr;
 
 	$connORA = $self->connect_to_oracle;
@@ -798,17 +814,18 @@ sub doExpNciVidU
 	}
 	$connORA->disconnect;
 	$connDBF->disconnect;
-}
+    return $fname;
+};
 
 sub doExpStreets
 {
 	my $self = shift;
 	my ($cmd, $ins, $year, $month, $t) = @_;
 
-	my ( $connDBF, $connORA, $sthDBF, @row );
+	my ( $connDBF, $connORA, $sthDBF, $fname, @row );
 
 # Step #1 -> create dbf
-	$connDBF = $self->createDBF($year, $month, $t);
+	($connDBF, $fname) = $self->createDBF($year, $month, $t);
 	$sthDBF = $connDBF->prepare($ins) or die $connDBF->errstr;
 
 	$connORA = $self->connect_to_oracle;
@@ -839,17 +856,17 @@ sub doExpStreets
 	}
 	$connORA->disconnect;
 	$connDBF->disconnect;
-
+    return $fname;
 }
 
 sub doExpSegments {
 	my $self = shift;
 	my ($cmd, $ins, $year, $month, $t) = @_;
 
-	my ( $connDBF, $connORA, $sthDBF, @row );
+	my ( $connDBF, $connORA, $sthDBF, $fname, @row );
 
 # Step #1 -> create dbf
-	$connDBF = $self->createDBF($year, $month, $t);
+	($connDBF, $fname) = $self->createDBF($year, $month, $t);
 	$sthDBF = $connDBF->prepare($ins) or die $connDBF->errstr;
 
 	$connORA = $self->connect_to_oracle;
@@ -881,16 +898,17 @@ sub doExpSegments {
 
 	$connDBF->disconnect;
 	$connORA->disconnect;
+    return $fname;
 }
 
 sub doExpNciRes {
 	my $self = shift;
 	my ($cmd, $ins, $year, $month, $t) = @_;
 
-	my ( $connDBF, $connORA, $sthDBF, @row );
+	my ( $connDBF, $connORA, $sthDBF, $fname, @row );
 
 # Step #1 -> create dbf
-	$connDBF = $self->createDBF($year, $month, $t);
+	($connDBF, $fname) = $self->createDBF($year, $month, $t);
 	$sthDBF = $connDBF->prepare($ins) or die $connDBF->errstr;
 
 	$connORA = $self->connect_to_oracle;
@@ -906,17 +924,17 @@ sub doExpNciRes {
 	}
 	$connDBF->disconnect;
 	$connORA->disconnect;
-
+    return $fname;
 }
 
 sub doExpSTASMP {
 	my $self = shift;
 	my ($cmd, $ins, $year, $month, $t) = @_;
 
-	my ( $connDBF, $connORA, $sthDBF, @row );
+	my ( $connDBF, $connORA, $sthDBF, $fname, @row );
 
 # Step #1 -> create dbf
-	$connDBF = $self->createDBF($year, $month, $t);
+	($connDBF, $fname) = $self->createDBF($year, $month, $t);
 	$sthDBF = $connDBF->prepare($ins) or die $connDBF->errstr;
 
 	$connORA = $self->connect_to_oracle;
@@ -933,6 +951,7 @@ sub doExpSTASMP {
 
 	$connDBF->disconnect;
 	$connORA->disconnect;
+    return $fname;
 }
 
 
@@ -940,10 +959,10 @@ sub doExpBRSP {
 	my $self = shift;
 	my ($cmd, $ins, $year, $month, $t) = @_;
 
-	my ( $connDBF, $connORA, $sthDBF, @row );
+	my ( $connDBF, $connORA, $sthDBF, $fname, @row );
 
 # Step #1 -> create dbf
-	$connDBF = $self->createDBF($year, $month, $t);
+	($connDBF, $fname) = $self->createDBF($year, $month, $t);
 	$sthDBF = $connDBF->prepare($ins) or die $connDBF->errstr;
 
 	$connORA = $self->connect_to_oracle;
@@ -961,6 +980,7 @@ sub doExpBRSP {
 
 	$connDBF->disconnect;
 	$connORA->disconnect;
+    return $fname;
 }
 
 

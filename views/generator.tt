@@ -1,5 +1,9 @@
 <script type="text/javascript">
 
+$(document).ready(function(){
+    $('#results').slideUp();
+});
+
 //   $(function(){
 //       var nowTemp = new Date();
 //       var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
@@ -16,7 +20,7 @@ $(function() {
                 showButtonPanel: true,
                 dateFormat: 'mm-yy',
                 showOn: "button",
-		onClose: function(dateText, inst) { 
+		onClose: function(dateText, inst) {
 		      var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
 		      var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
 		      $(this).datepicker('setDate', new Date(year, month, 1));
@@ -30,27 +34,28 @@ $(function() {
         var id_button = this.id;
         event.preventDefault();
         this.value = "Идет расчет.....";
-	ajax_search(this.id, id_button, old_name); 
+	ajax_search(this.id, id_button, old_name);
       });
-  function ajax_search(btnid, id_clicked_btn, name_of_button){ 
-		//$("#results").show(); 
+  function ajax_search(btnid, id_clicked_btn, name_of_button){
+		$("#results").show();
 		var sdate=$("#sdate").val();
 		var id=btnid;
 		//console.log('Done is pressed: id_clicked_btn : ' + id_clicked_btn + ' name_of_button-> ' + name_of_button);
 		$.post("oms", { id: id, int_date: sdate }, function(data){
 		    $('#'+id_clicked_btn).attr('value', name_of_button);
-		    if (data.length>0){ 
-			//$("#results").html(data);
-			$('#'+id_clicked_btn).attr('value', name_of_button + '  [ ' + data + ' ]');
-			//console.log('Done');
-		    } 
+		    if (data.length>0){
+			  $('#div_' + id).html(data);
+			  $('#'+id_clicked_btn).attr('value', name_of_button + '  [ Done ]');
+			  console.log('#' + btnid + ' data: ' + data);
+
+		    }
 		});
     }
  });
 
 
 
-</script>   
+</script>
 <style>
 .ui-datepicker-calendar {
     display: none;
@@ -65,10 +70,10 @@ $(function() {
   <form action="" method="POST" name="formid" id="formid">
 
      <div class="dates">
-	<label for="sdate" />Дата (ММ/ГГГГ): </label><em></em>
+	<label for="sdate" />Дата (ММ-ГГГГ): </label><em></em>
 	     <INPUT type="text" name="date_s" value="" alt="Дата" id="sdate" class="dates required" readonly />
      </div>
-  
+
         <ul class="list-group">
           <li class="list-group-item"><input type="submit" id="SSP4708"   class="btn btn-info" value="Расчет ОМС (SSP4708) за отчетный период" /></li>
           <li class="list-group-item"><input type="submit" id="STASMP"    class="btn btn-info" value="Список подстанций (STASMP)" /></li>
@@ -77,7 +82,32 @@ $(function() {
           <li class="list-group-item"><input type="submit" id="STREETS"   class="btn btn-info" value="Список улиц (STREETS)" /></li>
           <li class="list-group-item"><input type="submit" id="SEGMENTS"  class="btn btn-info" value="Список сегментов (SEGMENTS)" /></li>
           <li class="list-group-item"><input type="submit" id="NCI_VID_U" class="btn btn-info" value="Список результатов (NCI_VID_U)" /></li>
-        </ul>        
+        </ul>
   </form>
+  <div id="results">
+   <div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">Результат:</h4>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-4" id="div_SSP4708">
+        </div>
+        <div class="col-md-4" id="div_STASMP">
+        </div>
+        <div class="col-md-4" id="div_BRSP">
+        </div>
+        <div class="col-md-4" id="div_RES_SP">
+        </div>
+        <div class="col-md-4" id="div_STREETS">
+        </div>
+        <div class="col-md-4" id="div_SEGMENTS">
+        </div>
+        <div class="col-md-4" id="div_NCI_VID_U">
+        </div>
+     </div>
+    </div>
+   </div>
+  </div>
   </div>
 </div>

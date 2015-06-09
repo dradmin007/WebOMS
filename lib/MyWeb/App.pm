@@ -19,6 +19,7 @@ post '/oms' => sub {
 
    use FindBin;
    use File::Spec;
+   use File::Basename;
    use lib File::Spec->catdir($FindBin::Bin, '.', 'lib');
 
 
@@ -28,6 +29,7 @@ post '/oms' => sub {
    $ENV{"NLS_LANG"} = "american_america.ru8pc866";
 
    my $res = 0;
+   my $fname;
 
    my $id = params->{id};
    my ($month, $year) = split '-',params->{int_date};
@@ -39,14 +41,26 @@ post '/oms' => sub {
    $res = $o->export_to_dbf("STASMP") if $id eq "STASMP";
    $res = $o->export_to_dbf("BRSP") if $id eq "BRSP";
    $res = $o->export_to_dbf("SSP4708") if $id eq "SSP4708";
+   $res = $o->export_to_dbf("NCIVIDU") if $id eq "NCI_VID_U";
    #
    #
    $ENV{"NLS_LANG"} = $old_nls;
-   return "Done!" if $res == 1;
+   #return send_file (
+   #    $res,
+   #    system_path => 1,
+   #    content_type => 'appication/octet-stream'
+   #) if $res ne "";
+   $fname  = basename($res);
+   return "<a href=\"/result/$fname\" class=\"btn btn-default\">".$fname."</a>" if $res ne "";
 };
 
-get '/hello/:name' => sub {
-    return "Hello: " . params->{name};
+get '/result/:fname' => sub {
+   return send_file (
+       "/home/stas/OMS/out/".params->{fname},
+       system_path => 1,
+       content_type => 'appication/octet-stream'
+   );
+       # return "Hello: " . params->{fname};
 };
 
 #true;
